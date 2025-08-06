@@ -20,8 +20,7 @@ const jobs = [
 ];
 
 function DraggablePill({ id }: { id: string }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({ id });
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
 
   return (
     <div
@@ -30,9 +29,9 @@ function DraggablePill({ id }: { id: string }) {
       {...attributes}
       style={{
         transform: CSS.Translate.toString(transform),
-        opacity: isDragging ? 0.5 : 1,
+        opacity: 1,
       }}
-      className="border-primary border-2 rounded-xl px-4 py-2 text-md cursor-grab select-none"
+      className="  border-primary border-2 rounded-xl px-4 py-2 text-md cursor-grab select-none"
     >
       {id}
     </div>
