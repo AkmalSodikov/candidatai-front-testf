@@ -7,7 +7,7 @@ import {
   type DragEndEvent,
   type UniqueIdentifier,
 } from '@dnd-kit/core';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
 
@@ -17,11 +17,6 @@ const jobs = [
   'Product Manager',
   'Data Analyst',
   'UX Researcher',
-  'QA Tester',
-  'Marketing',
-  'Support',
-  'AI Engineer',
-  'Sales',
 ];
 
 function DraggablePill({ id }: { id: string }) {
@@ -85,39 +80,48 @@ export default function JobRanker() {
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="p-4 flex flex-col items-center gap-6 mt-4"
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="p-4 flex flex-col items-center gap-6 mt-4"
+    >
+      <DndContext onDragEnd={handleDragEnd}>
         <h1 className="text-3xl font-semibold">
           Pick top 3 jobs that fit you best
         </h1>
         <span className="text-xl font-medium text-gray-500">
           Drag and drop here
         </span>
-
         {/* Droppable slots */}
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           {Object.entries(slots).map(([slotId, job]) => (
             <DroppableSlot key={slotId} id={slotId} job={job} />
           ))}
         </div>
 
         {/* Draggable pills */}
-        <div className="p-4 flex flex-wrap gap-2 max-w-lg justify-center">
-          {jobs.map(
-            (job) =>
-              !Object.values(slots).includes(job) && (
-                <DraggablePill key={job} id={job} />
-              )
-          )}
-        </div>
-
-        <Button className="px-16 py-5">Continue</Button>
-      </motion.div>
-    </DndContext>
+        <AnimatePresence>
+          <div className="p-4 flex flex-wrap gap-2 max-w-lg justify-center">
+            {jobs.map(
+              (job) =>
+                !Object.values(slots).includes(job) && (
+                  <motion.div
+                    key={job}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <DraggablePill id={job} />
+                  </motion.div>
+                )
+            )}
+          </div>
+        </AnimatePresence>
+      </DndContext>
+      <Button className="px-16 py-5">Continue</Button>
+    </motion.div>
   );
 }
