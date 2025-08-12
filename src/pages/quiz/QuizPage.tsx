@@ -3,6 +3,7 @@ import { Progress } from '@/components/ui/progress';
 import { ArrowLeft } from 'lucide-react';
 import QuizCard from '@/features/quiz/QuizCard';
 import { AnimatePresence } from 'framer-motion';
+import useAnswersStore from '@/stores/useAnswersStore';
 
 const questions = [
   {
@@ -161,7 +162,7 @@ const questions = [
 export default function QuizPage() {
   const total = questions.length;
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<string[]>(Array(total).fill(''));
+  const { answers, addAnswer } = useAnswersStore();
   const [finishText, setFinishText] = useState<string>('');
 
   const isLast = currentIndex === total - 1;
@@ -171,18 +172,16 @@ export default function QuizPage() {
   }
 
   const handleSelect = (value: string) => {
-    const updated = [...answers];
-    updated[currentIndex] = value;
-    setAnswers(updated);
+    addAnswer(questions[currentIndex].question, value);
   };
 
   const next = () => {
     if (currentIndex < total - 1) {
       if (currentIndex === 0) {
         setFinishText('💪 Keep going!');
-      } else if (currentIndex === 1) {
+      } else if (currentIndex === Math.ceil(total / 2) - 3) {
         setFinishText('✨ You are halfway there!');
-      } else if (currentIndex === 2) {
+      } else if (currentIndex === total - 4) {
         setFinishText('🚀 Almost there!');
       }
       setCurrentIndex((i) => i + 1);
@@ -226,9 +225,9 @@ export default function QuizPage() {
         <AnimatePresence mode="wait">
           <QuizCard
             onSelect={handleSelect}
-            selected={answers[currentIndex]}
+            selected={answers[currentIndex]?.answer}
             key={currentIndex}
-            question={questions[currentIndex].question}
+            question={questions[currentIndex]?.question}
             options={questions[currentIndex]?.options}
             questionType={questions[currentIndex].type}
             onNext={next}

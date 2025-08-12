@@ -1,5 +1,5 @@
 // JobRanker.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   DndContext,
   useDraggable,
@@ -10,15 +10,18 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
+import { getJobTitles } from '@/api/jobTitleService';
+import useAnswersStore from '@/stores/useAnswersStore';
+import { Loader2 } from 'lucide-react';
 
 // mock data
-const jobs = [
-  'Designer',
-  'Developer',
-  'Product Manager',
-  'Data Analyst',
-  'UX Researcher',
-];
+// const jobs = [
+//   'Designer',
+//   'Developer',
+//   'Product Manager',
+//   'Data Analyst',
+//   'UX Researcher',
+// ];
 
 function DraggablePill({ id }: { id: string }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
@@ -61,6 +64,10 @@ function DroppableSlot({
 }
 
 export default function JobRanker() {
+  const { answers } = useAnswersStore();
+  const [jobTitles, setJobTitles] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [slots, setSlots] = useState<{
     [key: string]: UniqueIdentifier | null;
   }>({
@@ -79,6 +86,21 @@ export default function JobRanker() {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getJobTitles(answers);
+        setJobTitles(data.job_titles);
+      } catch (error) {
+        console.error('Failed to fetch job titles', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [answers]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -86,42 +108,52 @@ export default function JobRanker() {
       transition={{ duration: 0.4, ease: 'easeOut' }}
       className="p-4 flex flex-col items-center gap-6 mt-4"
     >
-      <DndContext onDragEnd={handleDragEnd}>
-        <h1 className="text-3xl font-semibold">
-          Pick top 3 jobs that fit you best
-        </h1>
-        <span className="text-xl font-medium text-gray-500">
-          Drag and drop here
-        </span>
-        {/* Droppable slots */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          {Object.entries(slots).map(([slotId, job]) => (
-            <DroppableSlot key={slotId} id={slotId} job={job} />
-          ))}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <span className="text-lg text-gray-500">Loading job titles...</span>
         </div>
+      ) : (
+        <>
+          <DndContext onDragEnd={handleDragEnd}>
+            <h1 className="text-3xl font-semibold">
+              Pick top 3 jobs that fit you best
+            </h1>
+            <span className="text-xl font-medium text-gray-500">
+              Drag and drop here
+            </span>
 
-        {/* Draggable pills */}
-        <AnimatePresence>
-          <div className="p-4 flex flex-wrap gap-2 max-w-lg justify-center">
-            {jobs.map(
-              (job) =>
-                !Object.values(slots).includes(job) && (
-                  <motion.div
-                    key={job}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <DraggablePill id={job} />
-                  </motion.div>
-                )
-            )}
-          </div>
-        </AnimatePresence>
-      </DndContext>
-      <Button className="px-16 py-5">Continue</Button>
+            {/* Droppable slots */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              {Object.entries(slots).map(([slotId, job]) => (
+                <DroppableSlot key={slotId} id={slotId} job={job} />
+              ))}
+            </div>
+
+            {/* Draggable pills */}
+            <AnimatePresence>
+              <div className="p-4 flex flex-wrap gap-2 max-w-lg justify-center">
+                {jobTitles?.map(
+                  (job: string) =>
+                    !Object.values(slots).includes(job) && (
+                      <motion.div
+                        key={job}
+                        layout
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <DraggablePill id={job} />
+                      </motion.div>
+                    )
+                )}
+              </div>
+            </AnimatePresence>
+          </DndContext>
+          <Button className="px-16 py-5">Continue</Button>
+        </>
+      )}
     </motion.div>
   );
 }
