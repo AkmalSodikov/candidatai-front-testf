@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
 
+// mock data
 const jobs = [
   'Designer',
   'Developer',

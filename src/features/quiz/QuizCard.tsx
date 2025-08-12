@@ -1,18 +1,27 @@
 import { useState } from 'react';
 import { RadioGroup } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import ChoiceOption from './ChoiceOption';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router';
+import { Slider } from '@/components/ui/slider';
 
 interface QuizCardProps {
   question: string;
-  options: { value: string; label: string }[];
+  options?: { value: string; icon?: string; label?: string }[];
   onNext: () => void;
   onSkip: () => void;
   onSelect: (value: string) => void;
   selected: string;
   isLast: boolean;
+  questionType: string;
 }
 
 export default function QuizCard({
@@ -23,9 +32,85 @@ export default function QuizCard({
   onSkip,
   onSelect,
   isLast,
+  questionType,
 }: QuizCardProps) {
   const [selected, setSelected] = useState<string>(selectedParent || '');
   const navigate = useNavigate();
+
+  const handleSelection = (value: string) => {
+    setSelected(value);
+    onSelect(value);
+  };
+
+  const renderQuestionInput = () => {
+    switch (questionType) {
+      case 'select':
+        return (
+          <Select value={selected} onValueChange={handleSelection}>
+            <SelectTrigger className="capitalize w-full">
+              <SelectValue placeholder="Select an option" />
+            </SelectTrigger>
+            <SelectContent>
+              {options?.map((opt) => (
+                <SelectItem
+                  className="capitalize"
+                  key={opt.value}
+                  value={opt.value}
+                >
+                  {opt?.icon} {opt.value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        );
+
+      case 'slider':
+        return (
+          <div className="flex w-full px-1">
+            <Slider
+              value={[Number(selected) || 50]}
+              max={1000}
+              step={1}
+              onValueChange={([value]) => {
+                handleSelection(`${value}`);
+              }}
+              className="relative my-8"
+            >
+              <div
+                className="absolute left-[calc(var(--value,50)*1%)] -translate-x-1/2 -top-6 text-sm font-medium"
+                style={{
+                  left: `${Number(selected) || 50}%`,
+                  transform: 'translateX(-50%)',
+                }}
+              >
+                {selected || 50} km
+              </div>
+            </Slider>
+          </div>
+        );
+
+      case 'regular':
+      default:
+        return (
+          <RadioGroup
+            value={selected}
+            onValueChange={handleSelection}
+            className="flex flex-col gap-y-4"
+          >
+            {options?.map((opt) => (
+              <ChoiceOption
+                key={opt.value}
+                id={opt.value}
+                value={opt.value}
+                label={opt?.label || ''}
+                selected={selected === opt.value}
+                onSelect={handleSelection}
+              />
+            ))}
+          </RadioGroup>
+        );
+    }
+  };
 
   return (
     <motion.div
@@ -38,28 +123,8 @@ export default function QuizCard({
     >
       <h1 className="font-semibold text-3xl">{question}</h1>
 
-      <RadioGroup
-        value={selected}
-        onValueChange={(value) => {
-          setSelected(value);
-          onSelect(value);
-        }}
-        className="flex flex-col gap-y-4"
-      >
-        {options.map((opt) => (
-          <ChoiceOption
-            key={opt.value}
-            id={opt.value}
-            value={opt.value}
-            label={opt.label}
-            selected={selected === opt.value}
-            onSelect={(value) => {
-              setSelected(value);
-              onSelect(value);
-            }}
-          />
-        ))}
-      </RadioGroup>
+      {renderQuestionInput()}
+
       <div className="flex items-center justify-end gap-x-3">
         {isLast ? (
           <Button onClick={() => navigate('/rank-jobs')} className="p-5 px-16">
