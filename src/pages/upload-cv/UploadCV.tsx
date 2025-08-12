@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import UploadCloud from '@/assets/upload/upload-cloud.svg';
 import React, { useState } from 'react';
 import { Progress } from '@/components/ui/progress.tsx';
@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button.tsx';
 import { Loader } from 'lucide-react';
 
 const UploadCV = () => {
-  const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [hasUploaded, setHasUploaded] = useState<boolean>(false);
