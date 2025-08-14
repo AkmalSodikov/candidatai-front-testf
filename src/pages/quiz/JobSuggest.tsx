@@ -103,7 +103,7 @@ export default function JobRanker() {
     >
       <DndContext onDragEnd={handleDragEnd}>
         <h1 className="text-3xl font-semibold">
-          Pick top 3 jobs that fit you best
+          Select your top 3 job choices
         </h1>
         <span className="text-xl font-medium text-gray-500">
           Drag and drop here

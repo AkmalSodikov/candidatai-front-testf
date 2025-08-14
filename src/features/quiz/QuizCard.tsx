@@ -57,7 +57,7 @@ export default function QuizCard({
                   key={opt.value}
                   value={opt.value}
                 >
-                  {opt?.icon} {opt.value}
+                  {opt?.icon} {opt.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -68,8 +68,9 @@ export default function QuizCard({
         return (
           <div className="flex w-full px-1">
             <Slider
-              value={[Number(selected) || 50]}
-              max={1000}
+              value={[Number(selected) || 15]}
+              max={120}
+              min={15}
               step={1}
               onValueChange={([value]) => {
                 handleSelection(`${value}`);
