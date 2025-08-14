@@ -72,7 +72,7 @@ export default function QuizCard({
               value={[Number(selected) || 15]}
               max={120}
               min={15}
-              step={5}
+              step={1}
               onValueChange={([value]) => {
                 handleSelection(`${value}`);
               }}
