@@ -66,12 +66,13 @@ export default function QuizCard({
 
       case 'slider':
         return (
-          <div className="flex w-full px-1">
+          <div className="flex flex-col w-full px-1">
+            <span className="text-secondary mb-1">Minutes to the office</span>
             <Slider
               value={[Number(selected) || 15]}
               max={120}
               min={15}
-              step={1}
+              step={5}
               onValueChange={([value]) => {
                 handleSelection(`${value}`);
               }}
