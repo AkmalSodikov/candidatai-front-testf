@@ -8,89 +8,51 @@ import useAnswersStore from '@/stores/useAnswersStore';
 const questions = [
   {
     type: 'select',
-    question: 'Select your location',
+    question: 'Where do you prefer to work?',
     options: [
-      { value: 'argentina', icon: '🇦🇷', label: 'Argentina' },
-      { value: 'australia', icon: '🇦🇺', label: 'Australia' },
-      { value: 'austria', icon: '🇦🇹', label: 'Austria' },
-      { value: 'bahrain', icon: '🇧🇭', label: 'Bahrain' },
-      { value: 'bangladesh', icon: '🇧🇩', label: 'Bangladesh' },
-      { value: 'belgium', icon: '🇧🇪', label: 'Belgium' },
-      { value: 'bulgaria', icon: '🇧🇬', label: 'Bulgaria' },
-      { value: 'brazil', icon: '🇧🇷', label: 'Brazil' },
-      { value: 'canada', icon: '🇨🇦', label: 'Canada' },
-      { value: 'chile', icon: '🇨🇱', label: 'Chile' },
-      { value: 'china', icon: '🇨🇳', label: 'China' },
-      { value: 'colombia', icon: '🇨🇴', label: 'Colombia' },
-      { value: 'costa rica', icon: '🇨🇷', label: 'Costa Rica' },
-      { value: 'croatia', icon: '🇭🇷', label: 'Croatia' },
-      { value: 'cyprus', icon: '🇨🇾', label: 'Cyprus' },
-      { value: 'czech republic', icon: '🇨🇿', label: 'Czech Republic' },
-      { value: 'denmark', icon: '🇩🇰', label: 'Denmark' },
-      { value: 'ecuador', icon: '🇪🇨', label: 'Ecuador' },
-      { value: 'egypt', icon: '🇪🇬', label: 'Egypt' },
-      { value: 'estonia', icon: '🇪🇪', label: 'Estonia' },
-      { value: 'finland', icon: '🇫🇮', label: 'Finland' },
-      { value: 'france', icon: '🇫🇷', label: 'France' },
-      { value: 'germany', icon: '🇩🇪', label: 'Germany' },
-      { value: 'greece', icon: '🇬🇷', label: 'Greece' },
-      { value: 'hong kong', icon: '🇭🇰', label: 'Hong Kong' },
-      { value: 'hungary', icon: '🇭🇺', label: 'Hungary' },
-      { value: 'india', icon: '🇮🇳', label: 'India' },
-      { value: 'indonesia', icon: '🇮🇩', label: 'Indonesia' },
-      { value: 'ireland', icon: '🇮🇪', label: 'Ireland' },
-      { value: 'israel', icon: '🇮🇱', label: 'Israel' },
-      { value: 'italy', icon: '🇮🇹', label: 'Italy' },
-      { value: 'japan', icon: '🇯🇵', label: 'Japan' },
-      { value: 'kuwait', icon: '🇰🇼', label: 'Kuwait' },
-      { value: 'latvia', icon: '🇱🇻', label: 'Latvia' },
-      { value: 'lithuania', icon: '🇱🇹', label: 'Lithuania' },
-      { value: 'luxembourg', icon: '🇱🇺', label: 'Luxembourg' },
-      { value: 'malaysia', icon: '🇲🇾', label: 'Malaysia' },
-      { value: 'malta', icon: '🇲🇹', label: 'Malta' },
-      { value: 'mexico', icon: '🇲🇽', label: 'Mexico' },
-      { value: 'morocco', icon: '🇲🇦', label: 'Morocco' },
-      { value: 'netherlands', icon: '🇳🇱', label: 'Netherlands' },
-      { value: 'new zealand', icon: '🇳🇿', label: 'New Zealand' },
-      { value: 'nigeria', icon: '🇳🇬', label: 'Nigeria' },
-      { value: 'norway', icon: '🇳🇴', label: 'Norway' },
-      { value: 'oman', icon: '🇴🇲', label: 'Oman' },
-      { value: 'pakistan', icon: '🇵🇰', label: 'Pakistan' },
-      { value: 'panama', icon: '🇵🇦', label: 'Panama' },
-      { value: 'peru', icon: '🇵🇪', label: 'Peru' },
-      { value: 'philippines', icon: '🇵🇭', label: 'Philippines' },
-      { value: 'poland', icon: '🇵🇱', label: 'Poland' },
-      { value: 'portugal', icon: '🇵🇹', label: 'Portugal' },
-      { value: 'qatar', icon: '🇶🇦', label: 'Qatar' },
-      { value: 'romania', icon: '🇷🇴', label: 'Romania' },
-      { value: 'saudi arabia', icon: '🇸🇦', label: 'Saudi Arabia' },
-      { value: 'singapore', icon: '🇸🇬', label: 'Singapore' },
-      { value: 'slovakia', icon: '🇸🇰', label: 'Slovakia' },
-      { value: 'slovenia', icon: '🇸🇮', label: 'Slovenia' },
-      { value: 'south africa', icon: '🇿🇦', label: 'South Africa' },
-      { value: 'south korea', icon: '🇰🇷', label: 'South Korea' },
-      { value: 'spain', icon: '🇪🇸', label: 'Spain' },
-      { value: 'sweden', icon: '🇸🇪', label: 'Sweden' },
-      { value: 'switzerland', icon: '🇨🇭', label: 'Switzerland' },
-      { value: 'taiwan', icon: '🇹🇼', label: 'Taiwan' },
-      { value: 'thailand', icon: '🇹🇭', label: 'Thailand' },
-      { value: 'turkey', icon: '🇹🇷', label: 'Turkey' },
-      { value: 'ukraine', icon: '🇺🇦', label: 'Ukraine' },
-      {
-        value: 'united arab emirates',
-        icon: '🇦🇪',
-        label: 'United Arab Emirates',
-      },
-      { value: 'London, UK', icon: '🇬🇧', label: 'London, UK' },
-      { value: 'usa', icon: '🇺🇸', label: 'USA' },
-      { value: 'uruguay', icon: '🇺🇾', label: 'Uruguay' },
-      { value: 'venezuela', icon: '🇻🇪', label: 'Venezuela' },
-      { value: 'vietnam', icon: '🇻🇳', label: 'Vietnam' },
+      { value: 'london', label: 'London' },
+      { value: 'manchester', label: 'Manchester' },
+      { value: 'birmingham', label: 'Birmingham' },
+      { value: 'liverpool', label: 'Liverpool' },
+      { value: 'leeds', label: 'Leeds' },
+      { value: 'newcastle', label: 'Newcastle upon Tyne' },
+      { value: 'sheffield', label: 'Sheffield' },
+      { value: 'nottingham', label: 'Nottingham' },
+      { value: 'bristol', label: 'Bristol' },
+      { value: 'cardiff', label: 'Cardiff' },
+      { value: 'edinburgh', label: 'Edinburgh' },
+      { value: 'glasgow', label: 'Glasgow' },
+      { value: 'aberdeen', label: 'Aberdeen' },
+      { value: 'dundee', label: 'Dundee' },
+      { value: 'inverness', label: 'Inverness' },
+      { value: 'belfast', label: 'Belfast' },
+      { value: 'derry', label: 'Derry / Londonderry' },
+      { value: 'cambridge', label: 'Cambridge' },
+      { value: 'oxford', label: 'Oxford' },
+      { value: 'bath', label: 'Bath' },
+      { value: 'brighton', label: 'Brighton' },
+      { value: 'portsmouth', label: 'Portsmouth' },
+      { value: 'southampton', label: 'Southampton' },
+      { value: 'york', label: 'York' },
+      { value: 'canterbury', label: 'Canterbury' },
+      { value: 'exeter', label: 'Exeter' },
+      { value: 'swansea', label: 'Swansea' },
+      { value: 'stirling', label: 'Stirling' },
+      { value: 'lake_district', label: 'Lake District' },
+      { value: 'stonehenge', label: 'Stonehenge' },
+      { value: 'isle_of_skye', label: 'Isle of Skye' },
+      { value: 'cornwall', label: 'Cornwall' },
+      { value: 'peak_district', label: 'Peak District' },
+      { value: 'snowdonia', label: 'Snowdonia' },
+      { value: 'isle_of_wight', label: 'Isle of Wight' },
+      { value: 'stratford', label: 'Stratford-upon-Avon' },
+      { value: 'durham', label: 'Durham' },
+      { value: 'chester', label: 'Chester' },
     ],
   },
   {
     type: 'slider',
-    question: 'How far are you happy to travel for work?',
+    question: 'How far* are you happy to travel for work?',
   },
   {
     type: 'select',
@@ -109,6 +71,22 @@ const questions = [
     options: [
       { value: 'yes', label: 'Yes' },
       { value: 'no', label: 'No' },
+    ],
+  },
+  {
+    type: 'select',
+    question: 'Which industry do you prefer to work in?',
+    options: [
+      { value: 'tech_it', label: 'Technology / IT' },
+      { value: 'finance', label: 'Finance / Banking / Insurance' },
+      { value: 'marketing', label: 'Marketing / Advertising / Media' },
+      { value: 'retail', label: 'Retail / E-commerce' },
+      { value: 'healthcare', label: 'Healthcare / Life Sciences' },
+      { value: 'education', label: 'Education / Training' },
+      { value: 'engineering', label: 'Engineering / Manufacturing' },
+      { value: 'hospitality', label: 'Hospitality / Tourism' },
+      { value: 'government', label: 'Government / Non-profit' },
+      { value: 'other', label: 'Other' },
     ],
   },
   {
@@ -168,6 +146,7 @@ export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { answers, addAnswer } = useAnswersStore();
   const [finishText, setFinishText] = useState<string>('');
+  const [finishStar, setFinishStar] = useState<string>('');
 
   const isLast = currentIndex === total - 1;
 
@@ -183,10 +162,12 @@ export default function QuizPage() {
     if (currentIndex < total - 1) {
       if (currentIndex === 0) {
         setFinishText('💪 Keep going!');
+        setFinishStar('⭐');
       } else if (currentIndex === Math.ceil(total / 2) - 3) {
         setFinishText('✨ You are halfway there!');
       } else if (currentIndex === total - 4) {
         setFinishText('🚀 Almost there!');
+        setFinishStar('🌟');
       }
       setCurrentIndex((i) => i + 1);
     }
@@ -215,8 +196,8 @@ export default function QuizPage() {
             onClick={prev}
           />
           <h1 className="text-xl">{finishText}</h1>
-          <span className="self-end text-lg">
-            {currentIndex + 1}
+          <span className="self-end text-xl">
+            {finishStar} {currentIndex + 1}
             <span className="text-muted-foreground">/{total}</span>
           </span>
         </div>

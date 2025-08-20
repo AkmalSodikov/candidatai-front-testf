@@ -10,15 +10,12 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '@/components/ui/button';
-
-//mock data
-const jobs = [
-  'Designer',
-  'Developer',
-  'Product Manager',
-  'Data Analyst',
-  'UX Researcher',
-];
+import { Link, useNavigate } from 'react-router';
+import { getJobTitles } from '@/api/jobTitleService';
+import useAnswersStore from '@/stores/useAnswersStore';
+import { Loader2 } from 'lucide-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { startVacancyScraping } from '@/api/matchingService';
 
 function DraggablePill({ id }: { id: string }) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({ id });
@@ -60,7 +57,52 @@ function DroppableSlot({
   );
 }
 
-export default function JobRanker() {
+export default function JobTitlesPage() {
+  const navigate = useNavigate();
+  const { answers } = useAnswersStore();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: () =>
+      startVacancyScraping({
+        queries: [
+          {
+            title: String(slots['1']),
+            location: 'UK',
+            weight: 0.6,
+          },
+          {
+            title: String(slots['2']),
+            location: 'UK',
+            weight: 0.3,
+          },
+          {
+            title: String(slots['3']),
+            location: 'UK',
+            weight: 0.1,
+          },
+        ],
+        resume_id: localStorage.getItem('resume_id') || 'none',
+      }),
+    onSuccess: (data) => {
+      navigate('/my-jobs', { state: { id: data.user_request_id } });
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const { data: jobTitles, isLoading } = useQuery<
+    { job_titles: string[] },
+    Error,
+    string[]
+  >({
+    queryKey: ['jobTitles', answers],
+    queryFn: () => getJobTitles(answers),
+    enabled: !!answers,
+    staleTime: Infinity,
+    select: (res) => res.job_titles,
+  });
+
   const [slots, setSlots] = useState<{
     [key: string]: UniqueIdentifier | null;
   }>({
@@ -79,20 +121,21 @@ export default function JobRanker() {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const data = await getJobTitles(answers);
-  //       setJobTitles(data.job_titles);
-  //     } catch (error) {
-  //       console.error('Failed to fetch job titles', error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [answers]);
+  if (isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        className="flex flex-col justify-center h-screen items-center gap-8"
+      >
+        <span className="text-gray-500 text-xl text-center">
+          Finding your dream jobs 🚀
+        </span>
+        <Loader2 className="text-primary font-bold mr-5 ml-5 size-12 animate-spin" />
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -119,7 +162,7 @@ export default function JobRanker() {
         {/* Draggable pills */}
         <AnimatePresence>
           <div className="p-4 flex flex-wrap gap-2 max-w-lg justify-center">
-            {jobs?.map(
+            {jobTitles?.map(
               (job: string) =>
                 !Object.values(slots).includes(job) && (
                   <motion.div
@@ -137,7 +180,12 @@ export default function JobRanker() {
           </div>
         </AnimatePresence>
       </DndContext>
-      <Button className="px-16 py-5">Continue</Button>
+      <Link className="text-primary underline" to="custom">
+        Couldn't find a job that fits you?
+      </Link>
+      <Button onClick={() => mutate()} className="px-16 py-5">
+        {isPending ? <Loader2 className="size-4 animate-spin" /> : 'Continue'}
+      </Button>
     </motion.div>
   );
 }

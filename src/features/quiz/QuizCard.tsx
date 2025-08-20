@@ -67,27 +67,17 @@ export default function QuizCard({
       case 'slider':
         return (
           <div className="flex flex-col w-full px-1">
-            <span className="text-secondary mb-1">Minutes to the office</span>
+            <span className="text-secondary mb-1">*Minutes to the office</span>
             <Slider
-              value={[Number(selected) || 15]}
-              max={120}
+              value={[Number(selected) || 30]}
+              max={60}
               min={15}
-              step={1}
+              step={15}
               onValueChange={([value]) => {
                 handleSelection(`${value}`);
               }}
               className="relative my-8"
-            >
-              <div
-                className="absolute left-[calc(var(--value,50)*1%)] -translate-x-1/2 -top-6 text-sm font-medium"
-                style={{
-                  left: `${Number(selected) || 50}%`,
-                  transform: 'translateX(-50%)',
-                }}
-              >
-                {selected || 50} km
-              </div>
-            </Slider>
+            />
           </div>
         );
 
